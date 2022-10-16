@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+    </head>
+<body>
+        <center><canvas id="canvas2"  width="400" height="140" style="border: 5px solid black;"></canvas>
+        <br>
+        <canvas id="canvas"  width="1700" height="1110" style="border: 5px solid black;"></canvas>
+        </center>
+        
+
+</body>
+</html>
+
+<style>
+    body{
+        overflow: hidden;
+        background: lightslategray;
+    }
+    
+</style>
+
+<script>
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    let canvas2 = document.getElementById("canvas2");
+    let context2 = canvas2.getContext("2d");
+
+    canvas.style.background ="#bbf";
+
+    var a = '',aColor='', b = '',bColor='';
+    var colors = ['red', 'green', 'blue', 'yellow'];  
+    var randomColors = [];
+    var circles = [];
+    var arr = [];
+    var counts = [];
+    var num = 0;
+    var timerVar = 10,score =0,level=1;
+    var gameRunning = true;
+    var length = 8;
+    var usedArr = []; 
+
+    context2.font = "28px Comic Sans Ms";
+    context2.fillStyle = "black";
+    context2.textAlign = "center";
+    context2.fillText("Timer: ", 70, 40);context2.fillText(timerVar+"s", 140, 40);
+    context2.fillText("Score: ", 70, 80);context2.fillText(score, 140, 80);
+    context2.fillText("Level: ", 70, 120);context2.fillText(level, 140, 120);
+    createArr(length);
+    shuffle(randomColors);
+    timer();
+
+    class Circle{
+        constructor(xpoint, ypoint, radius, color){
+            this.xpoint = xpoint;
+            this.ypoint = ypoint;
+            this.radius = radius;
+            this.color = color;
+        }
+      
+        draw(){
+            context.beginPath();
+            context.arc(this.xpoint, this.ypoint, this.radius, 0, Math.PI*2, false);
+            context.stroke();
+            context.fillStyle = this.color;
+            context.fill();
+            context.closePath();
+        }
+
+        changeColor(newColor){
+            this.color = newColor;
+            this.draw(context);
+        }
+
+        click(xmouse, ymouse, id){
+            const distance = Math.sqrt( ((xmouse-this.xpoint) * (xmouse- this.xpoint)) + ((ymouse-this.ypoint) * (ymouse-this.ypoint)) );
+            console.log("a: "+a+", b: "+b);
+            if(distance<this.radius){
+                if(a == this || gameRunning == false ||  usedArr.includes(this)){
+                    return;
+                }
+
+                for(var i=0; i<length; i++){
+                    if(id == i){
+                     this.changeColor(randomColors[i]);
+                    }
+                }
+            
+                if(a == ''){
+                     a = this;
+                     aColor = this.color;
+                     return;
+                }
+                b = this;
+                bColor = this.color;
+                if(aColor == bColor){
+                    a.changeColor(aColor);
+                    b.changeColor(bColor);
+                    score +=1;
+                    timerVar += 5;
+                    context2.clearRect(120, 50, 50, 40);
+                    context2.fillText(score, 140, 80);
+                    usedArr.push(a); 
+                    usedArr.push(b); 
+                    if(score == (length/2)){
+                        level += 1;
+                        score = 0;
+                        context2.clearRect(120, 50, 50, 40);
+                        context2.fillText(score, 140, 80);
+                        context2.clearRect(110, 90, 60, 40);
+                        context2.fillText(level, 140, 120);
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        usedArr = [];
+                        if(level == 2){
+                            length = 16;
+                            randomColors = [];
+                            createArr(16);
+                            shuffle(randomColors);
+                            createCirlces(4);
+                        }
+                        if(level == 3){
+                            length = 24;
+                            randomColors = [];
+                            createArr(24);
+                            shuffle(randomColors);
+                            createCirlces(6);
+                        }
+                        if(level > 3){
+                            context2.clearRect(120, 10, 40, 40);
+                            context2.fillText("Winner!", 160, 40);
+                            gameRunning = false;
+                        }
+
+                   
+                    }
+                }
+                else{
+                    a.changeColor(aColor);
+                    b.changeColor(bColor);
+                    delay(a,b);
+                }
+                a = b = aColor = bColor = '';
+            }
+        }
+    }
+    createCirlces(2);
+    
+    function createArr(length){
+        for(var i=0; i<length; i++){
+            randomColors[i] = colors[num];
+            num++;
+            if(num > 3)
+                num = 0;
+        }
+    }
+
+    function createCirlces(row){
+        var num = 0;
+        var column = 200;
+        var radius = 100;
+        var padding = 300;
+        for(var i=0; i<row; i++){
+            for(var j=0; j<4; j++){
+                if(level == 1){
+                    if(i == 1)
+                        column = 450;
+                }
+                if(level==2){
+                    column = 100;
+                    if(i == 1)
+                        column = 300;
+                    if(i == 2)
+                        column = 500;
+                    if(i == 3)
+                        column = 700;
+                    radius = 80;
+                    padding = 250;
+                }
+                if(level==3){
+                    column = 100;
+                    if(i == 1)
+                        column = 300;
+                    if(i == 2)
+                        column = 500;
+                    if(i == 3)
+                        column = 700;
+                    if(i == 4)
+                        column = 900;
+                    if(i == 5)
+                        column = 1100;
+                    radius = 80;
+                    padding = 250;
+                }
+                circles[num] = new Circle(350+(j*padding),column, radius, 'white');
+                circles[num].draw();
+                num++;    
+            }
+        }
+    }
+
+    
+  
+    canvas.addEventListener('click',() => {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        for(var i=0; i<length; i++){
+            circles[i].click(x,y,i);
+        }
+    });
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function timer(){
+        while (timerVar > 0 && gameRunning == true) {
+            timerVar --;
+            context2.clearRect(110, 10, 60, 40);
+            context2.fillText(timerVar+"s", 140, 40);
+            await sleep(1000);
+        }
+        if(gameRunning && score != 5){
+            context2.clearRect(120, 10, 40, 40);
+            context2.fillText("looser", 160, 40);
+            gameRunning = false;
+        }
+       
+    }
+
+    async function delay(a,b) {
+        await sleep(450);  
+        a.changeColor('white');
+        b.changeColor('white');
+    }
+
+    function rand() {
+        min = 0;
+        max = 4;
+        return Math.floor(Math.random() * (max - min + 1) ) + min;
+    }
+
+    function shuffle(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+</script>
