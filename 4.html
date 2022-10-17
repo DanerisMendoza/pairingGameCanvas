@@ -4,9 +4,9 @@
         <title></title>
     </head>
 <body>
-        <center><canvas id="canvas2"  width="400" height="140" style="border: 5px solid black;"></canvas>
+        <center><canvas id="canvas2"  width="300" height="100" style="border: 5px solid black;"></canvas>
         <br>
-        <canvas id="canvas"  width="1700" height="1110" style="border: 5px solid black;"></canvas>
+        <canvas id="canvas"  width="1200" height="500" style="border: 5px solid black;"></canvas>
         </center>
         
 
@@ -41,12 +41,13 @@
     var length = 8;
     var usedArr = []; 
 
-    context2.font = "28px Comic Sans Ms";
+    context2.font = "18px Comic Sans Ms";
     context2.fillStyle = "black";
     context2.textAlign = "center";
-    context2.fillText("Timer: ", 70, 40);context2.fillText(timerVar+"s", 140, 40);
-    context2.fillText("Score: ", 70, 80);context2.fillText(score, 140, 80);
-    context2.fillText("Level: ", 70, 120);context2.fillText(level, 140, 120);
+    context2.fillText("Timer: ", 70, 20);context2.fillText(timerVar+"s", 140, 20);
+    context2.fillText("Score: ", 70, 50);context2.fillText(score, 140, 50);
+    context2.fillText("Level: ", 70, 80);context2.fillText(level, 140, 80);
+    
     createArr(length);
     shuffle(randomColors);
     timer();
@@ -99,17 +100,17 @@
                     b.changeColor(bColor);
                     score +=1;
                     timerVar += 5;
-                    context2.clearRect(120, 50, 50, 40);
-                    context2.fillText(score, 140, 80);
+                    context2.clearRect(100, 30, 50, 30);
+                    context2.fillText(score, 140, 50);
                     usedArr.push(a); 
                     usedArr.push(b); 
                     if(score == (length/2)){
                         level += 1;
                         score = 0;
-                        context2.clearRect(120, 50, 50, 40);
-                        context2.fillText(score, 140, 80);
-                        context2.clearRect(110, 90, 60, 40);
-                        context2.fillText(level, 140, 120);
+                        context2.clearRect(100, 30, 50, 30);
+                        context2.fillText(score, 140, 50);
+                        context2.clearRect(100, 50, 50, 30);
+                        context2.fillText(level, 140, 80);
                         context.clearRect(0, 0, canvas.width, canvas.height);
                         usedArr = [];
                         if(level == 2){
@@ -127,8 +128,8 @@
                             createCirlces(6);
                         }
                         if(level > 3){
-                            context2.clearRect(120, 10, 40, 40);
-                            context2.fillText("Winner!", 160, 40);
+                            context2.clearRect(110, 0, 60, 30);
+                            context2.fillText("Winner!", 140, 20);
                             gameRunning = false;
                         }
 
@@ -157,49 +158,47 @@
 
     function createCirlces(row){
         var num = 0;
-        var column = 200;
-        var radius = 100;
-        var padding = 300;
+        var column = 150;
+        var radius = 70;
+        var padding = 250;
         for(var i=0; i<row; i++){
             for(var j=0; j<4; j++){
                 if(level == 1){
                     if(i == 1)
-                        column = 450;
+                        column = 350;
                 }
                 if(level==2){
                     column = 100;
                     if(i == 1)
-                        column = 300;
+                        column = 210;
                     if(i == 2)
-                        column = 500;
+                        column = 320;
                     if(i == 3)
-                        column = 700;
-                    radius = 80;
+                        column = 430;
+                    radius = 50;
                     padding = 250;
                 }
                 if(level==3){
-                    column = 100;
+                    column = 50;
                     if(i == 1)
-                        column = 300;
+                        column = 120;
                     if(i == 2)
-                        column = 500;
+                        column = 190;
                     if(i == 3)
-                        column = 700;
+                        column = 260;
                     if(i == 4)
-                        column = 900;
+                        column = 330;
                     if(i == 5)
-                        column = 1100;
-                    radius = 80;
+                        column = 400;
+                    radius = 30;
                     padding = 250;
                 }
-                circles[num] = new Circle(350+(j*padding),column, radius, 'white');
+                circles[num] = new Circle(200+(j*padding),column, radius, 'white');
                 circles[num].draw();
                 num++;    
             }
         }
     }
-
-    
   
     canvas.addEventListener('click',() => {
         const rect = canvas.getBoundingClientRect();
@@ -217,13 +216,13 @@
     async function timer(){
         while (timerVar > 0 && gameRunning == true) {
             timerVar --;
-            context2.clearRect(110, 10, 60, 40);
-            context2.fillText(timerVar+"s", 140, 40);
+            context2.clearRect(110, 0, 60, 30);
+            context2.fillText(timerVar+"s", 140, 20);
             await sleep(1000);
         }
         if(gameRunning && score != 5){
-            context2.clearRect(120, 10, 40, 40);
-            context2.fillText("looser", 160, 40);
+            context2.clearRect(110, 0, 60, 30);
+            context2.fillText("looser!", 140, 20);
             gameRunning = false;
         }
        
