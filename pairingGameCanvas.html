@@ -2,11 +2,17 @@
 <html>
     <head>
         <title></title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css"> 
     </head>
 <body>
-        <center><canvas id="canvas2"  width="300" height="100" style="border: 5px solid black;"></canvas>
-        <br>
-        <canvas id="canvas"  width="1200" height="500" style="border: 5px solid black;"></canvas>
+        <center>
+            <div class="container">
+                <canvas id="canvas2"  width="300" height="100" style="border: 3px solid yellow; background: gray;"></canvas>
+                <button id="playAgain">Play Again</button>
+            </div>
+            <br>
+            <canvas id="canvas" width="1200" height="500" style="border: 5px solid whitesmoke;"></canvas>
+            </div>
         </center>
         
 
@@ -16,7 +22,22 @@
 <style>
     body{
         overflow: hidden;
-        background: lightslategray;
+        background-image: url(bg.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    #playAgain{
+        height: 50px;
+        width: 100px;
+        background-color: yellowgreen;
+        margin-left: 10px;
+    }
+    .container{
+        height: 100px;
+        width: 100px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin-left: -100px;
     }
     
 </style>
@@ -27,8 +48,14 @@
     let canvas2 = document.getElementById("canvas2");
     let context2 = canvas2.getContext("2d");
 
-    canvas.style.background ="#bbf";
+    // play again
+    document.getElementById("playAgain").onclick = function() {
+        alert('Game Restart');
+        window.location.reload();
+    };
 
+    canvas.style.background ="#154c79";
+    // init
     var a = '',aColor='', b = '',bColor='';
     var colors = ['red', 'green', 'blue', 'yellow'];  
     var randomColors = [];
@@ -42,7 +69,7 @@
     var usedArr = []; 
 
     context2.font = "18px Comic Sans Ms";
-    context2.fillStyle = "black";
+    context2.fillStyle = "white";
     context2.textAlign = "center";
     context2.fillText("Timer: ", 70, 20);context2.fillText(timerVar+"s", 140, 20);
     context2.fillText("Score: ", 70, 50);context2.fillText(score, 140, 50);
@@ -77,6 +104,7 @@
         click(xmouse, ymouse, id){
             const distance = Math.sqrt( ((xmouse-this.xpoint) * (xmouse- this.xpoint)) + ((ymouse-this.ypoint) * (ymouse-this.ypoint)) );
             console.log("a: "+a+", b: "+b);
+            // check if click is inside the radius of this circle
             if(distance<this.radius){
                 if(a == this || gameRunning == false ||  usedArr.includes(this)){
                     return;
@@ -130,10 +158,11 @@
                         if(level > 3){
                             context2.clearRect(110, 0, 60, 30);
                             context2.fillText("Winner!", 140, 20);
+                            context2.clearRect(100, 50, 50, 30);
+                            context2.fillText("", 140, 80);
+
                             gameRunning = false;
                         }
-
-                   
                     }
                 }
                 else{
